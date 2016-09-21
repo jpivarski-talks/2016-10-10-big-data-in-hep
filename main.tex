@@ -18,7 +18,55 @@ In this talk, we present an active LHC Run 2 analysis, searching for dark matter
 \end{abstract}
 
 \section{Introduction}
-Start of introduction \cite{ex1}.
+
+In 2012, Particle Physics entered a new age. With the discovery of the Higgs Boson, the Standard Model was extended with the missing mechanism that gives rise to the particle masses. The theory was developed since the 1960' and numerous experiments constrained the properties of the Higgs Boson by not detecting the particle. Since this discovery, the path to go beyond the Standard Model in our understanding of matter and the universe does not follow a predictable path anymore. Various theories can explain the current short-commings of the theory and need to be investigated.
+
+Particle physics has always been at the forefront of analyzing the world's largest datasets. Although we constrain ourselves to High Energy Physics, where known particles are brought to collisions at the highest energies possible, the underlying data organization holds for all directions of particle physics. The most basic concept of how data in HEP is organized is the event. The event captures all detector signals belonging to an individual particle collision. The event is the atomic unit of HEP data and can be treated individually, explaining why the computational problems of particle physics can be parallelized very well. 
+
+Events have to be reconstructed to convert the detector signals into mesurements of particles produced in the collisions. This is done usually centrally for every experiment. The reconstructed events are then used by physicists to extract physics. The process is very individualized, as individual researchers or groups of researchers look at different physics phenomenons in the data. This results in a challenging computational problem, where in some cases thousands of physicists analyze the same input samples of events to extract different physics results.
+
+The analysis process looks at properties of the event like energy or momenmtum of particles produced in the collisions. It is based on comparing the distribution of properties measured in many events with theoretical predictions of the same property, either calculated empirically or simulated using Monte Carlo techniques. Particle physics is a statistical science. Significant number of recorded and simulated events are needed to make statistical significant statements.
+
+The particle physics community was the first to develop suitable software and computing tools for this task. The community also developed procedures to avoid recording all particle collisions in the first place called the trigger, where a very fast reconstruction of subsets of the produced particles in an event are used to decide whether to record or discard the event. In the analysis process, physicists learned to pre-select events to tailor the event sample to their interests and therefore reducing the data size called skimming. Further data reduction is achieved by discarding not needed parts of the information of an event called slimming. In the end, the final analysis process looking at dsitributions of event properties and comparing them with theoretical prediction is a very interactive and iterative process.
+
+With the ever increasing data volumes in particle physics, the interactivity of physics analysis gets more and more reduced because there is just too much data to analyze quick enough. Looking into the future, the goal is to reduce the time-to-physics and regain the interactivity needed to successfully eplore the nature of matter and the universe.
+
+In recent times, new toolkits and systems collectively called “Big Data” technologies have emerged to support the analysis of Petabyte and Exabyte datasets in industry. These new technologies use different approaches and promise a fresh look at analysis of very large datasets. In this paper, we present an active LHC Run 2 analysis, searching for dark matter with the CMS detector, as a testbed for “Big Data” technologies. We directly compare the traditional analysis with an equivalent analysis using Apache Spark. In both cases, we start the analysis with the centrally reconstructed or simulated events of the experiment and produce publication physics plots using traditional and Big Data technologies. 
+
+\section{The Physics Use Case}
+
+The universe does not only consist of matter that we understand. From <how do we know> we know that only about 4-5\% of the universe consists of matter that is described by the Standard Model. It consist of the elmentary particles: 3 leptons (electron, muon and tau), 3 neutrinos, 6 quarks (up, down, strange, charm, bottom, top) and the force carriers or boson: photon, W and Z boson, gluons and the Higgs Boson. The remainder of the universe consists of something we cannot see, which does not interact electro-magnetically. 25\% of what we can't see behaves like matter and is called "Dark Matter", 70\% behaves like energy and is called "Dark Energy". 
+
+In a particle collision, Dark Matter, if it exists, would be produced in association with visible particles. Dark Matter particle(s) would propagate through the detector undetected while visible particles would leave signals in the detector. The event signature we search for is an energy imbalance, or “missing transverse energy” associated with detectable particles.
+
+The Dark Matter use case analysis of this study is conducted at the Large Hadron Collider (LHC)~\cite{lhc} at CERN~\cite{cern}. The LHC is the currently highest energy particle collider in the world located in Geneva, Switzerland. It accelerates protons to 6.5 TeV energy in two circular evacuated beam pipes. The beams of protons are brought to collision in 4 points around the almost 17­ mile circumference ring. The Compact Muon Solenoid (CMS) Collaboration built, maintains and operates the CMS detector at one of the collision points. The CMS detector consists of different detector components that measure different properties of the particles produced in a collision. The detector components are arranged concentrically around the collision. The very compact arrangement of the various detector system and the emphasis on muon detection gives the 14,500 ton detector and the collaboration its name.
+
+In particular, this Dark Matter search is looking for a signature in the events commonly referred to as "monoX" where "X" can be a light quark or gluon, a vector boson, or a heavy quark such as a bottom or top quark. We focus our search on the “monoTop” signature, where the detectable particle is a top quark.
+
+\section{The Traditional Analysis Workflow}
+
+The traditional user analysis workflow of the CMS data starts from centrally produced reconstruction samples of recorded and simulated collisions. CMS is using the C++ framework CMSSW and the I/O capabilities of the ROOT framework to schedule reconstruction algorithms and persist objects of reconstructed information files.
+
+Although very efficient, the object-oriented class structure of the objects of reconstructed information is very difficult to use for end-user analysis. Most analysts or analysis groups translate the class structure into a flat ntuple, where events are stored in a flat data structure of mostly primitive types or simple classes, also written with the ROOT framework. These files can be analyzed independently of the CMSSW framework and therefore have minimal dependencies that would have to installed by the analysts, another advantage of converting into ntuples.
+
+The ntuples are still to big for interactive analysis. Most analysts or analysis groups introduce an additional step where the ntuples are skimmed (evenst get preselected depending on the phsycis use case) and slimmed (not-used information per event is dropped).
+
+The last step of the analysis workflow is the actual analysis, where properties are plotted in histograms. In most cases, different sets of data have to be combined in a single histogram, for example to compare the recorded collisions with the simulation which is stiched together from different simulated processes.
+
+The time scales of the complete workflow shown in Fig.~\ref{tadaaa} can range from days to weeks, depending on how many reconstructed and simulated events are needed for the analysis. The first step is repeated about 4 times a year and the produced ntuples can be used by a larger group of physicists. The skimming and slimming step is executed between 1 and 4 times a month. The actual analysis step at the end to produce ploys is repeated many many times a day because it represents the interative and interactive analysis.
+
+For a 200 TB input, the ntuples have a size of about 2 TB. These then get skimmed and slimmed down to a couple GB which are used to explore the data and produce plots.
+
+\section{The Spark Analysis Workflow on Commodity Hardware}
+
+\section{The Spark Analysis Workflow on NERSC}
+
+\section{The Comparison}
+
+\section{The Lessons Learned}
+
+\section{The Next Steps}
+Start of next steps \cite{ex1}.
 
 \section*{References}
 \bibliography{main}
