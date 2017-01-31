@@ -1,6 +1,37 @@
 \documentclass[a4paper]{jpconf}
 \usepackage{graphicx}
 \bibliographystyle{iopart-num}
+
+\usepackage{listings,multicol}
+%\usepackage{algpseudocode}
+%\usepackage{lipsum}
+\usepackage{parcolumns}
+\usepackage{xcolor}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstdefinestyle{myScalastyle}{
+  frame=tb,
+  float=*,
+  language=scala,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  frame=single,
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+}
+
+
 \begin{document}
 \title{“Big Data” in HEP: A comprehensive use case study}
 
@@ -86,7 +117,7 @@ We translated the group ntuples stored in ROOT format into a suitable file forma
 
 The actual analysis code was translated from its ROOT based C++ code basis into Scala~\cite{scala}, chosen because of its excellent native support in Spark. Scala allowed to significantly simplify the analysis workflow consisting of two loops over the input. In the case of MC input, first a sum of weights determined in the simulation itself is calculated by looping over all events in the input. This is followed by a second event loop that performs the actual skimming and slimming. The Scala code is shown here:
 
-\begin{verbatim}
+\begin{lstlisting}[style=myScalastyle]
 // Reference the whole dataset (not individual files)
 val mcsample = avrordd("hdfs://path/to/mcsample/*.avro")
 
@@ -99,7 +130,8 @@ val result = mcsample.filter(cuts).map(toNtuple(_, mc_sumOfWeights, mc_xsec))
 
 // Save as ntuple
 result.toDF().write.parquet("hdfs://path/to/mcsample_ntuple")
-\end{verbatim}
+\end{lstlisting}
+
 
 As a development system, We used a 10 node cluster of Intel Xeon CPU E5-2680 v2 @ 2.80GHz CPU processors with 256 GB RAM interconnected through 10 Gigabit Ethernet. The Cloudera~\cite{cloudera} Hadoop distribution (CDH 5.9.1) was used. Spark jobs were scheduled through YARN. Input AVRO files were stored on an HDFS file-system spanning the cluster. Spark was automatically using the whole cluster for the two event loops.
 
