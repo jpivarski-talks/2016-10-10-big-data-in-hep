@@ -4,10 +4,11 @@
 \begin{document}
 \title{“Big Data” in HEP: A comprehensive use case study}
 
-\author{Oliver Gutsche$^1$, Matteo Cremonesi$^1$, Peter Elmer$^2$, Bo Jayatilaka$^1$, Jim Kowalkowski$^1$, Jim Pivarski$^2$, Saba Sehrish$^1$, Cristina Mantilla Suárez$^1$, Alexey Svyatkovskiy$^2$, Nhan Tran$^1$}
+\author{Oliver Gutsche$^1$, Matteo Cremonesi$^1$, Peter Elmer$^2$, Bo Jayatilaka$^1$, Jim Kowalkowski$^1$, Jim Pivarski$^2$, Saba Sehrish$^1$, Cristina Mantilla Suárez$^3$, Alexey Svyatkovskiy$^2$, Nhan Tran$^1$}
 
 \address{$^1$Fermi National Accelerator Laboratory, Batavia, IL, USA}
 \address{$^2$Princeton University, Princeton, NJ, USA}
+\address{$^3$Fermi National Accelerator Laboratory, Batavia, IL, USA; now Johns Hopkins University, Baltimore, MD, USA}
 
 \ead{gutsche@fnal.gov}
 
@@ -26,7 +27,7 @@ In 2012, Particle Physics entered a new age. With the discovery of the Higgs Bos
 
 Particle physics has always been at the forefront of analyzing the world's largest datasets. Although we constrain ourselves in this paper to High Energy Physics (HEP), where known particles are made to collide at the highest energies possible, the underlying data organization holds for all sub-fields of particle physics. The most basic concept of how data in HEP is organized is an event: all detector signals associated with a single beam crossing and high-energy collision. Events are the atomic unit of HEP data and may be processed separately, which is why the computational problems of particle physics can be easily parallelized. 
 
-Events must be reconstructed to convert detector signals into measurements of particles produced in collisions. This is usually done centrally by each experiment. The reconstructed events are then used by different physics groups studying different questions. This process is very idiosyncratic, as individual researchers or groups are searching for different physics phenomenona in the data. This results in a challenging computational problem, where as many as thousands of physicists analyze the same datasets to extract different physics results.
+Events must be reconstructed to convert detector signals into measurements of particles produced in collisions. This is usually done centrally by each experiment. The reconstructed events are then input to the final analysis done by individual researchers of groups of researchers exploring a multitude of physics questions. This process is very idiosyncratic, as individual researchers or groups are searching for different physics phenomena in the data. This results in a challenging computational problem, where as many as thousands of physicists analyze the same datasets to extract different physics results.
 
 The analysis process uses properties of the event such as energy or momentum of particles produced in the collisions. It is based on comparing the distribution of properties measured in many events with theoretical predictions of the same property, either calculated empirically or simulated using Monte Carlo techniques. Particle physics is a statistical science. Statistically significant numbers of recorded and simulated events are required to make claims.
 
@@ -100,7 +101,7 @@ val result = mcsample.filter(cuts).map(toNtuple(_, mc_sumOfWeights, mc_xsec))
 result.toDF().write.parquet("hdfs://path/to/mcsample_ntuple")
 \end{verbatim}
 
-As a development system, We used a 10 node cluster of Intel Xeon CPU E5-2680 v2 @ 2.80GHz CPU processors with 256 GB RAM interconnected through 10 Gigabit Ethernet. The Cloudera~\cite{cloudera} Hadoop distribution was used. Spark jobs were scheduled through YARN. Input AVRO files were stored on an HDFS filesystem spanning the cluster. Spark was automatically using the whole cluster for the two event loops.
+As a development system, We used a 10 node cluster of Intel Xeon CPU E5-2680 v2 @ 2.80GHz CPU processors with 256 GB RAM interconnected through 10 Gigabit Ethernet. The Cloudera~\cite{cloudera} Hadoop distribution (CDH 5.9.1) was used. Spark jobs were scheduled through YARN. Input AVRO files were stored on an HDFS file-system spanning the cluster. Spark was automatically using the whole cluster for the two event loops.
 
 \section{The Usability Comparison}
 
@@ -110,7 +111,7 @@ The ROOT workflow consisted of a master script producing a series of secondary s
 
 Comparing the analysis code itself, the testers preferred the ROOT analysis code because they were very familiar with C++ and ROOT from their previous analysis experience. Scala was a new language for them and had a learning curve for them compared to C++ and ROOT.
 
-We were particularly interested in comparing the bookkeeping efforts of the two workflows. The testers noted that the ROOT workflow was designed for specific batch systems (in this case LSF). They tried but were not able to move it easily to another batch system. The partitioning of the inputs of the ROOT workflow was handled through a sophisticated suite of shell scripts relying on the physical location of the input files (in this case EOS at CERN~\cite{eos}). This was compared to the Spark workflow, which according to the testers showed very good portability. They were able to move the Spark workflow to CERN/lxplus in a very short time. The testers also remarked the ease of partitioning in Spark which can use automatic or custom facilities and is superior to the ROOT workflow approach used here. In summary, the bookkeeping effort was significantly reduced in the Spark workflow case and the portability is significantly easier to accomplish.
+We were particularly interested in comparing the bookkeeping efforts of the two workflows. The testers noted that the ROOT workflow was designed for specific batch systems (in this case LSF). They tried but were not able to move it easily to another batch system. The partitioning of the inputs of the ROOT workflow was handled through a sophisticated suite of shell scripts relying on the physical location of the input files (in this case EOS at CERN~\cite{eos}). This was compared to the Spark workflow, which according to the testers showed very good portability. They were able to move the Spark workflow to CERN/lxplus in a very short time. The partitioning in Spark can use automatic or custom facilities. The testers remarked its ease of use and that it is superior to the ROOT workflow approach. In summary, the bookkeeping effort was significantly reduced in the Spark workflow case and the portability is significantly easier to accomplish.
 
 \section{A First Look at a Performance Comparison}
 
